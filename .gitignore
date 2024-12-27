@@ -1,0 +1,21 @@
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment
+.venv/
+
+# Ignore data directory (if it's large or contains sensitive information)
+data/processed
+data/raw
+newdata/processed
+newdata/raw
+src/models/mlruns/0/
+# Ignore model files (if you don't want to push the trained models to GitHub)
+*.keras
+logs/
+# Ignore other temporary files (logs, model checkpoints, etc.)
+*.log
+*.checkpoint
+error_analysis.csv
+
