@@ -20,9 +20,9 @@ def setup_logging():
 
 def load_data(processed_data_dir: Path):
     """Load dữ liệu đã xử lý"""
-    train_df = pd.read_csv(processed_data_dir / 'train.csv')
-    val_df = pd.read_csv(processed_data_dir / 'val.csv')
-    test_df = pd.read_csv(processed_data_dir / 'test.csv')
+    train_df = pd.read_csv(processed_data_dir / 'train_data.csv')
+    val_df = pd.read_csv(processed_data_dir / 'val_data.csv')
+    test_df = pd.read_csv(processed_data_dir / 'test_data.csv')
 
     return train_df, val_df, test_df
 
@@ -50,9 +50,9 @@ def prepare_sequences(
 
     # Encode labels
     label_encoder = LabelEncoder()
-    y_train = label_encoder.fit_transform(train_df['class'])
-    y_val = label_encoder.transform(val_df['class'])
-    y_test = label_encoder.transform(test_df['class'])
+    y_train = label_encoder.fit_transform(train_df['label'])
+    y_val = label_encoder.transform(val_df['label'])
+    y_test = label_encoder.transform(test_df['label'])
 
 
 
@@ -78,7 +78,7 @@ def main():
     try:
         # Load data
         logger.info("Loading processed data...")
-        train_df, val_df, test_df = load_data(Path('/home/ponydasierra/projects/news_classification/newdata/processed'))
+        train_df, val_df, test_df = load_data(Path('/home/ponydasierra/thuctap/news_classification/data/processed5'))
 
         # Prepare sequences
         logger.info("Preparing sequences...")

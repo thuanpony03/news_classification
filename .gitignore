@@ -7,13 +7,15 @@ __pycache__/
 
 # Ignore data directory (if it's large or contains sensitive information)
 data/processed
+data/processed1
+data/processed5
 data/raw
 newdata/processed
 newdata/raw
 src/models/mlruns/0/
 # Ignore model files (if you don't want to push the trained models to GitHub)
 *.keras
-logs/
+src/logs/
 # Ignore other temporary files (logs, model checkpoints, etc.)
 *.log
 *.checkpoint

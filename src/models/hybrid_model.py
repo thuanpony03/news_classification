@@ -8,7 +8,6 @@ import logging
 from typing import List, Dict
 import numpy as np
 
-
 class HybridCNNLSTM:
     def __init__(
             self,

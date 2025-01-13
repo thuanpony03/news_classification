@@ -9,6 +9,7 @@ from config.hybrid_config import HYBRID_CONFIG, PROCESSED_DATA_DIR
 from src.models.hybrid_model import HybridCNNLSTM, HybridTrainer
 import mlflow
 import mlflow.tensorflow
+from config.hybrid_config import *
 
 
 def setup_logging():
@@ -23,9 +24,9 @@ def setup_logging():
 def load_and_prepare_data(processed_data_dir: Path):
     """Load và chuẩn bị dữ liệu"""
     # Load data
-    train_df = pd.read_csv(processed_data_dir / 'train.csv')
-    val_df = pd.read_csv(processed_data_dir / 'val.csv')
-    test_df = pd.read_csv(processed_data_dir / 'test.csv')
+    train_df = pd.read_csv(processed_data_dir / 'train_data.csv')
+    val_df = pd.read_csv(processed_data_dir / 'val_data.csv')
+    test_df = pd.read_csv(processed_data_dir / 'test_data.csv')
 
     # Create tokenizer
     tokenizer = Tokenizer(num_words=None)
@@ -58,9 +59,9 @@ def load_and_prepare_data(processed_data_dir: Path):
 
     # Encode labels
     label_encoder = LabelEncoder()
-    y_train = label_encoder.fit_transform(train_df['class'])
-    y_val = label_encoder.transform(val_df['class'])
-    y_test = label_encoder.transform(test_df['class'])
+    y_train = label_encoder.fit_transform(train_df['label'])
+    y_val = label_encoder.transform(val_df['label'])
+    y_test = label_encoder.transform(test_df['label'])
 
     return (X_train, y_train), (X_val, y_val), (X_test, y_test), tokenizer, label_encoder
 
@@ -90,7 +91,7 @@ def main():
             # Load and prepare data
             logger.info("Loading and preparing data...")
             train_data, val_data, test_data, tokenizer, label_encoder = load_and_prepare_data(
-                Path('/home/ponydasierra/projects/news_classification/newdata/processed')
+                Path('/home/ponydasierra/thuctap/news_classification/data/processed')
             )
 
             # Calculate class weights
@@ -115,11 +116,17 @@ def main():
             logger.info("Training model...")
             history = trainer.train(train_data, val_data, class_weights)
 
+
             # Log metrics
             for metric_name, metric_values in history.items():
                 for epoch, value in enumerate(metric_values):
                     mlflow.log_metric(metric_name, value, step=epoch)
 
+
+            # Lấy giá trị accuracy và loss trên tập train từ history
+            train_accuracy = history['accuracy'][-1]
+            train_loss = history['loss'][-1]
+            logger.info(f"Train Accuracy: {train_accuracy:.4f}, Train Loss: {train_loss:.4f}")
             # Evaluate on test set
             logger.info("Evaluating model...")
             test_loss, test_acc = model.evaluate(
@@ -159,9 +166,14 @@ def main():
             model.save(HYBRID_CONFIG['model_path'])
 
             # Save tokenizer and label encoder
-            import joblib
-            joblib.dump(tokenizer, 'models/tokenizer1.joblib')
-            joblib.dump(label_encoder, 'models/label_encoder1.joblib')
+            import pickle
+            # Lưu tokenizer
+            with open(MODELS_DIR / 'tokenizer1.pickle', 'wb') as f:
+                pickle.dump(tokenizer, f)
+
+            # Lưu label encoder
+            with open(MODELS_DIR / 'label_encoder1.pickle', 'wb') as f:
+                pickle.dump(label_encoder, f)
 
             logger.info("Training completed successfully!")
 
