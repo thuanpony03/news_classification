@@ -16,6 +16,7 @@ src/models/mlruns/0/
 # Ignore model files (if you don't want to push the trained models to GitHub)
 *.keras
 src/logs/
+src/models/logs
 # Ignore other temporary files (logs, model checkpoints, etc.)
 *.log
 *.checkpoint
